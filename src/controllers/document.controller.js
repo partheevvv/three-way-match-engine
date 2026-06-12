@@ -1,5 +1,6 @@
 import Document from "../models/document.model.js";
 import { parseDocument } from "../services/parser.service.js";
+import { evaluateMatchForPoNumber } from "../services/matching.service.js";
 
 function getPoNumberFromParsedData(documentType, parsedData) {
     if (documentType == "po") {
@@ -46,6 +47,7 @@ export async function uploadDocument(req, res) {
         if (!poNumber) {
             return res.status(400).json({
                 message: "poNumber could not be extracted from document",
+                parsedData,
             })
         }
 
@@ -60,9 +62,12 @@ export async function uploadDocument(req, res) {
             parsingStatus: "success",
         });
 
+        const matchResult = await evaluateMatchForPoNumber(poNumber);
+
         return res.status(201).json({
             message: "Document uploaded and parsed successfully",
             document,
+            matchResult,
         });
     } catch (error) {
         console.error("Upload document error:", error);

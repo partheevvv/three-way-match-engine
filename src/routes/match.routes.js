@@ -1,12 +1,8 @@
 import express from "express";
+import { getMatchByPoNumber } from "../controllers/match.controller.js";
 
 const router = express.Router();
 
-router.get("/:poNumber", (req, res) => {
-    res.json({
-        message: "Get match result route working",
-        poNumber: req.params.poNumber,
-    });
-});
+router.get("/:poNumber", getMatchByPoNumber);
 
 export default router;

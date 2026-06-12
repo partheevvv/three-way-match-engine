@@ -83,6 +83,7 @@ function getFakeInvoiceParsedData() {
         items: [
             {
                 itemCode: "FG-P-F-0503",
+                matchCode: "11423",
                 description: "PSM Cheesy Spicy Vegetable Momos 24Pcs",
                 hsnCode: "19022010",
                 quantity: 50,
@@ -92,6 +93,7 @@ function getFakeInvoiceParsedData() {
             },
             {
                 itemCode: "FG-M-F-0620",
+                matchCode: "18003",
                 description: "Meatigo Chicken Curry Cuts 450g (5%)",
                 hsnCode: "02071400",
                 quantity: 30,
@@ -101,6 +103,7 @@ function getFakeInvoiceParsedData() {
             },
             {
                 itemCode: "FG-M-F-0619",
+                matchCode: "18004",
                 description: "Meatigo Chicken Boneless Breast 450g (5%)",
                 hsnCode: "02071400",
                 quantity: 30,
