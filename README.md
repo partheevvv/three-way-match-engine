@@ -20,6 +20,7 @@ This project was built as part of a backend developer assignment for a fintech u
 * [Item Matching Strategy](#item-matching-strategy)
 * [Out-of-Order Upload Handling](#out-of-order-upload-handling)
 * [API Endpoints](#api-endpoints)
+* [API Usage Examples](#api-usage-examples)
 * [Setup Instructions](#setup-instructions)
 * [Environment Variables](#environment-variables)
 * [Testing with Sample Documents](#testing-with-sample-documents)
@@ -582,7 +583,35 @@ A Postman collection is included for testing all APIs:
 
 ```txt
 postman/finifi-three-way-match.postman_collection.json
+````
+
+### How to use the Postman collection
+
+1. Open Postman.
+2. Click **Import**.
+3. Select the file:
+
+```txt
+postman/finifi-three-way-match.postman_collection.json
 ```
+
+4. Set the collection variable `baseUrl` to:
+
+```txt
+http://localhost:5000
+```
+
+The collection includes:
+
+* Health check
+* Upload PO document
+* Upload GRN document
+* Upload Invoice document
+* Get parsed document by ID
+* Get match result by PO number
+* Out-of-order upload demo flow
+
+For file upload requests, select the sample PDF files manually in Postman if the local file path is not automatically resolved.
 
 ---
 
