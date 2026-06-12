@@ -1,0 +1,416 @@
+{
+"info": {
+"name": "FiniFi Three-Way Match Engine",
+"description": "Postman collection for testing PO, GRN, and Invoice document upload, parsed document retrieval, and three-way match result APIs.",
+"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+},
+"variable": [
+{
+"key": "baseUrl",
+"value": "http://localhost:5000",
+"type": "string"
+},
+{
+"key": "documentId",
+"value": "",
+"type": "string"
+},
+{
+"key": "poNumber",
+"value": "CI4PO05788",
+"type": "string"
+}
+],
+"item": [
+{
+"name": "Health Check",
+"request": {
+"method": "GET",
+"header": [],
+"url": {
+"raw": "{{baseUrl}}/health",
+"host": [
+"{{baseUrl}}"
+],
+"path": [
+"health"
+]
+},
+"description": "Checks whether the backend server is running."
+}
+},
+{
+"name": "Documents",
+"item": [
+{
+"name": "Upload PO Document",
+"request": {
+"method": "POST",
+"header": [],
+"body": {
+"mode": "formdata",
+"formdata": [
+{
+"key": "documentType",
+"value": "po",
+"type": "text"
+},
+{
+"key": "file",
+"type": "file",
+"src": "samples/PO.pdf"
+}
+]
+},
+"url": {
+"raw": "{{baseUrl}}/documents/upload",
+"host": [
+"{{baseUrl}}"
+],
+"path": [
+"documents",
+"upload"
+]
+},
+"description": "Uploads a Purchase Order document, parses it, stores it in MongoDB, and updates the latest match result."
+},
+"event": [
+{
+"listen": "test",
+"script": {
+"exec": [
+"const json = pm.response.json();",
+"",
+"pm.test('PO upload request succeeds', function () {",
+"  pm.response.to.have.status(201);",
+"});",
+"",
+"if (json.document && json.document._id) {",
+"  pm.collectionVariables.set('documentId', json.document._id);",
+"}",
+"",
+"if (json.document && json.document.poNumber) {",
+"  pm.collectionVariables.set('poNumber', json.document.poNumber);",
+"}"
+],
+"type": "text/javascript"
+}
+}
+]
+},
+{
+"name": "Upload GRN Document",
+"request": {
+"method": "POST",
+"header": [],
+"body": {
+"mode": "formdata",
+"formdata": [
+{
+"key": "documentType",
+"value": "grn",
+"type": "text"
+},
+{
+"key": "file",
+"type": "file",
+"src": "samples/GRN.pdf"
+}
+]
+},
+"url": {
+"raw": "{{baseUrl}}/documents/upload",
+"host": [
+"{{baseUrl}}"
+],
+"path": [
+"documents",
+"upload"
+]
+},
+"description": "Uploads a Goods Receipt Note document, parses it, stores it in MongoDB, and updates the latest match result."
+},
+"event": [
+{
+"listen": "test",
+"script": {
+"exec": [
+"const json = pm.response.json();",
+"",
+"pm.test('GRN upload request succeeds', function () {",
+"  pm.response.to.have.status(201);",
+"});",
+"",
+"if (json.document && json.document._id) {",
+"  pm.collectionVariables.set('documentId', json.document._id);",
+"}",
+"",
+"if (json.document && json.document.poNumber) {",
+"  pm.collectionVariables.set('poNumber', json.document.poNumber);",
+"}"
+],
+"type": "text/javascript"
+}
+}
+]
+},
+{
+"name": "Upload Invoice Document",
+"request": {
+"method": "POST",
+"header": [],
+"body": {
+"mode": "formdata",
+"formdata": [
+{
+"key": "documentType",
+"value": "invoice",
+"type": "text"
+},
+{
+"key": "file",
+"type": "file",
+"src": "samples/Invoice.pdf"
+}
+]
+},
+"url": {
+"raw": "{{baseUrl}}/documents/upload",
+"host": [
+"{{baseUrl}}"
+],
+"path": [
+"documents",
+"upload"
+]
+},
+"description": "Uploads an Invoice document, parses it, stores it in MongoDB, and updates the latest match result."
+},
+"event": [
+{
+"listen": "test",
+"script": {
+"exec": [
+"const json = pm.response.json();",
+"",
+"pm.test('Invoice upload request succeeds', function () {",
+"  pm.response.to.have.status(201);",
+"});",
+"",
+"if (json.document && json.document._id) {",
+"  pm.collectionVariables.set('documentId', json.document._id);",
+"}",
+"",
+"if (json.document && json.document.poNumber) {",
+"  pm.collectionVariables.set('poNumber', json.document.poNumber);",
+"}"
+],
+"type": "text/javascript"
+}
+}
+]
+},
+{
+"name": "Get Parsed Document by ID",
+"request": {
+"method": "GET",
+"header": [],
+"url": {
+"raw": "{{baseUrl}}/documents/{{documentId}}",
+"host": [
+"{{baseUrl}}"
+],
+"path": [
+"documents",
+"{{documentId}}"
+]
+},
+"description": "Fetches a stored parsed document by MongoDB document ID."
+},
+"event": [
+{
+"listen": "test",
+"script": {
+"exec": [
+"pm.test('Get parsed document request succeeds', function () {",
+"  pm.response.to.have.status(200);",
+"});"
+],
+"type": "text/javascript"
+}
+}
+]
+}
+]
+},
+{
+"name": "Match Results",
+"item": [
+{
+"name": "Get Match Result by PO Number",
+"request": {
+"method": "GET",
+"header": [],
+"url": {
+"raw": "{{baseUrl}}/match/{{poNumber}}",
+"host": [
+"{{baseUrl}}"
+],
+"path": [
+"match",
+"{{poNumber}}"
+]
+},
+"description": "Returns the latest three-way match result for a given PO number."
+},
+"event": [
+{
+"listen": "test",
+"script": {
+"exec": [
+"pm.test('Get match result request succeeds', function () {",
+"  pm.response.to.have.status(200);",
+"});",
+"",
+"const json = pm.response.json();",
+"",
+"pm.test('Response contains match status', function () {",
+"  pm.expect(json).to.have.property('status');",
+"});",
+"",
+"pm.test('Response contains mismatch reasons array', function () {",
+"  pm.expect(json).to.have.property('reasons');",
+"  pm.expect(json.reasons).to.be.an('array');",
+"});"
+],
+"type": "text/javascript"
+}
+}
+]
+}
+]
+},
+{
+"name": "Out-of-Order Upload Demo",
+"item": [
+{
+"name": "Step 1 - Upload Invoice First",
+"request": {
+"method": "POST",
+"header": [],
+"body": {
+"mode": "formdata",
+"formdata": [
+{
+"key": "documentType",
+"value": "invoice",
+"type": "text"
+},
+{
+"key": "file",
+"type": "file",
+"src": "samples/Invoice.pdf"
+}
+]
+},
+"url": {
+"raw": "{{baseUrl}}/documents/upload",
+"host": [
+"{{baseUrl}}"
+],
+"path": [
+"documents",
+"upload"
+]
+},
+"description": "Uploads Invoice before PO and GRN to demonstrate out-of-order handling. Expected match status is usually insufficient_documents."
+}
+},
+{
+"name": "Step 2 - Upload GRN Second",
+"request": {
+"method": "POST",
+"header": [],
+"body": {
+"mode": "formdata",
+"formdata": [
+{
+"key": "documentType",
+"value": "grn",
+"type": "text"
+},
+{
+"key": "file",
+"type": "file",
+"src": "samples/GRN.pdf"
+}
+]
+},
+"url": {
+"raw": "{{baseUrl}}/documents/upload",
+"host": [
+"{{baseUrl}}"
+],
+"path": [
+"documents",
+"upload"
+]
+},
+"description": "Uploads GRN after Invoice. The latest match result is recalculated again."
+}
+},
+{
+"name": "Step 3 - Upload PO Last",
+"request": {
+"method": "POST",
+"header": [],
+"body": {
+"mode": "formdata",
+"formdata": [
+{
+"key": "documentType",
+"value": "po",
+"type": "text"
+},
+{
+"key": "file",
+"type": "file",
+"src": "samples/PO.pdf"
+}
+]
+},
+"url": {
+"raw": "{{baseUrl}}/documents/upload",
+"host": [
+"{{baseUrl}}"
+],
+"path": [
+"documents",
+"upload"
+]
+},
+"description": "Uploads PO last. Full three-way matching should now run."
+}
+},
+{
+"name": "Step 4 - Fetch Final Match Result",
+"request": {
+"method": "GET",
+"header": [],
+"url": {
+"raw": "{{baseUrl}}/match/{{poNumber}}",
+"host": [
+"{{baseUrl}}"
+],
+"path": [
+"match",
+"{{poNumber}}"
+]
+},
+"description": "Fetches the final latest match result after out-of-order upload sequence."
+}
+}
+]
+}
+]
+}
