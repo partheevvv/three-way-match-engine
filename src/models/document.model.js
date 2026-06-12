@@ -38,6 +38,10 @@ const documentItemSchema = new mongoose.Schema(
           type: Number,
           default: null,
         },
+        extractionWarning: {
+            type: String,
+            default: null,
+        },
         rawText: {
           type: String,
           default: null,

@@ -1,3 +1,5 @@
+import { parseDocumentWithGemini } from "./gemini.service.js";
+
 function getFakePOParsedData() {
     return {
         poNumber: "CI4PO05788",
@@ -116,6 +118,12 @@ function getFakeInvoiceParsedData() {
 }
 
 export async function parseDocument(file, documentType) {
+    const useMockParser = process.env.USE_MOCK_PARSER === "true";
+
+    if (!useMockParser) {
+        return parseDocumentWithGemini(file, documentType);
+    }
+
     if (documentType === "po") {
         return getFakePOParsedData();
     }
